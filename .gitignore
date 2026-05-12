@@ -19,6 +19,7 @@ Release/
 *.vlb
 *.tvsconfig
 *.rc
+*.res
 
 # Backup/history
 __history/
