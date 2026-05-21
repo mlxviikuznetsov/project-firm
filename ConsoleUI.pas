@@ -139,7 +139,7 @@ const EMP_FMT = ' %-4s | %-30s | %-20s | %-6s | %-6s';
 procedure PrintEmployeeHeader;
 begin
   SetColor(CLR_HEADER);
-  WriteLn(Format(EMP_FMT, ['№', 'ФИО', 'Должность', 'Ч/сут', 'Рук.']));
+  WriteLn(Format(EMP_FMT, ['#', 'ФИО', 'Должность', 'Ч/сут', 'Рук.']));
   DrawLine(72);
   ResetColor;
 end;
@@ -161,7 +161,7 @@ procedure PrintWorkHeader;
 begin
   SetColor(CLR_HEADER);
   WriteLn(Format(WORK_FMT, [
-    '№', 'Проект', 'Задание', 'Исп.', 'Выдано', 'Срок'
+    '#', 'Проект', 'Задание', 'Исп.', 'Выдано', 'Срок'
   ]));
   DrawLine(78);
   ResetColor;
