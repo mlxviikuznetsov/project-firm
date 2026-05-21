@@ -15,18 +15,13 @@ uses
 
 var
   Choice: string;
-
 begin
-  SetConsoleCP866;
-
   { Главный цикл программы }
   repeat
     PrintHeader;
     PrintMainMenu;
-
     Choice := PromptStr('Введите номер пункта');
     WriteLn;
-
     if Choice = '1' then DoReadFromFile
     else if Choice = '2' then DoView
     else if Choice = '3' then DoSort
@@ -44,6 +39,5 @@ begin
       ResetColor;
       PressEnter;
     end;
-
   until False; // Выход через Halt в DoExitNoSave/DoExitSave
 end.
