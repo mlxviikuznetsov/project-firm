@@ -37,4 +37,4 @@ ProjectFirm/
  
 ## Technologies
  
-Object Pascal, Delphi 11 Alexandria, typed files, dynamic lists, Win32 Console API for colored output and correct Cyrillic rendering (UTF-8 via `SetConsoleOutputCP`).
+Object Pascal, Delphi 11 Alexandria, typed files, dynamic lists and Win32 Console API for colored output.
