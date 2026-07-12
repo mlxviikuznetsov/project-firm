@@ -78,18 +78,56 @@ begin
   WriteLn('  (!) Red = overdue, Yellow = due <= 7 days');
 end;
 
-// Input employee data
-function InputEmployee(const Defaults: TEmployee; IsNew: Boolean): TEmployee;
+// Find the smallest employee code (starting from 1) not yet in use
+function GetNextAvailableEmpCode: Integer;
+var
+  Cur: PEmployeeNode;
+  Candidate: Integer;
+  Taken: Boolean;
 begin
-  Result := Defaults;
+  Candidate := 1;
+  repeat
+    Taken := False;
+    Cur := EmpHead;
+    while Cur <> nil do
+    begin
+      if Cur^.Data.Code = Candidate then
+      begin
+        Taken := True;
+        Break;
+      end;
+      Cur := Cur^.Next;
+    end;
+    if Taken then Inc(Candidate);
+  until not Taken;
+  Result := Candidate;
+end;
+
+// Input employee data. Returns False if a new employee's code is
+// already taken; the caller should abort the add in that case.
+function InputEmployee(const Defaults: TEmployee; IsNew: Boolean;
+                        var Employee: TEmployee): Boolean;
+begin
+  Employee := Defaults;
+  Result := True;
   if IsNew then
-    Result.Code := PromptInt('Employee code', Defaults.Code);
-  Result.FullName := ShortString(PromptStr('Full name'));
-  if Result.FullName = '' then Result.FullName := Defaults.FullName;
-  Result.Position := ShortString(PromptStr('Position'));
-  if Result.Position = '' then Result.Position := Defaults.Position;
-  Result.WorkHours := PromptInt('Working hours per day', Defaults.WorkHours);
-  Result.BossCode := PromptInt('Boss code', Defaults.BossCode);
+  begin
+    Employee.Code := PromptInt('Employee code', Defaults.Code);
+    if EmpFindByCode(Employee.Code) <> nil then
+    begin
+      SetColor(CLR_ERROR);
+      WriteLn('  Employee code ', Employee.Code, ' is already in use.');
+      ResetColor;
+      Result := False;
+      Exit;
+    end;
+  end;
+  Employee.FullName := ShortString(PromptStr('Full name'));
+  if Employee.FullName = '' then Employee.FullName := Defaults.FullName;
+  Employee.Position := ShortString(PromptStr('Position'));
+  if Employee.Position = '' then Employee.Position := Defaults.Position;
+  Employee.WorkHours := PromptInt('Working hours per day', Defaults.WorkHours);
+  Employee.BossCode := PromptInt('Boss code', Defaults.BossCode);
 end;
 
 // Input task data
@@ -334,19 +372,22 @@ begin
   if Choice = '1' then
   begin
     WriteLn;
-    E := InputEmployee(Blank_E, True);
-    if E.FullName <> '' then
+    Blank_E.Code := GetNextAvailableEmpCode;
+    if InputEmployee(Blank_E, True, E) then
     begin
-      EmpAddToEnd(E);
-      SetColor(CLR_OK);
-      WriteLn('  [OK] Employee added. Total: ', EmpCount);
-      ResetColor;
-    end
-    else
-    begin
-      SetColor(CLR_ERROR);
-      WriteLn('  Add cancelled.');
-      ResetColor;
+      if E.FullName <> '' then
+      begin
+        EmpAddToEnd(E);
+        SetColor(CLR_OK);
+        WriteLn('  [OK] Employee added. Total: ', EmpCount);
+        ResetColor;
+      end
+      else
+      begin
+        SetColor(CLR_ERROR);
+        WriteLn('  Add cancelled.');
+        ResetColor;
+      end;
     end;
     PressEnter;
   end
@@ -476,7 +517,7 @@ begin
     end;
     WriteLn('  (Enter -- keep current value)');
     WriteLn;
-    NewE := InputEmployee(Node1^.Data, False);
+    InputEmployee(Node1^.Data, False, NewE);
     NewE.Code := Code;
     EmpUpdateByCode(Code, NewE);
     SetColor(CLR_OK);
