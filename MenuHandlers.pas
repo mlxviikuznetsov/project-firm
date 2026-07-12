@@ -85,7 +85,7 @@ var
   Candidate: Integer;
   Taken: Boolean;
 begin
-  Candidate := 1;
+  Candidate := 0;
   repeat
     Taken := False;
     Cur := EmpHead;
@@ -103,16 +103,15 @@ begin
   Result := Candidate;
 end;
 
-// Input employee data. Returns False if a new employee's code is
-// already taken; the caller should abort the add in that case.
+// Input employee data
 function InputEmployee(const Defaults: TEmployee; IsNew: Boolean;
-                        var Employee: TEmployee): Boolean;
+                       var Employee: TEmployee): Boolean;
 begin
   Employee := Defaults;
   Result := True;
   if IsNew then
   begin
-    Employee.Code := PromptInt('Employee code', Defaults.Code);
+    Employee.Code := PromptIntRange('Employee code', Defaults.Code, 0, 9999);
     if EmpFindByCode(Employee.Code) <> nil then
     begin
       SetColor(CLR_ERROR);
@@ -126,8 +125,10 @@ begin
   if Employee.FullName = '' then Employee.FullName := Defaults.FullName;
   Employee.Position := ShortString(PromptStr('Position'));
   if Employee.Position = '' then Employee.Position := Defaults.Position;
-  Employee.WorkHours := PromptInt('Working hours per day', Defaults.WorkHours);
-  Employee.BossCode := PromptInt('Boss code', Defaults.BossCode);
+  Employee.WorkHours := PromptIntRange('Working hours per day',
+                                       Defaults.WorkHours, 0, 24);
+  Employee.BossCode := PromptIntRange('Boss code (-1 = none)',
+                                      Defaults.BossCode, -1, 9999);
 end;
 
 // Input task data
@@ -138,11 +139,12 @@ begin
   if Result.ProjectName = '' then Result.ProjectName := Defaults.ProjectName;
   Result.Task := ShortString(PromptStr('Task'));
   if Result.Task = '' then Result.Task := Defaults.Task;
-  Result.ExecutorCode := PromptInt('Executor code', Defaults.ExecutorCode);
+  Result.ExecutorCode := PromptIntRange('Executor code',
+                                        Defaults.ExecutorCode, 0, 9999);
   Result.IssueDate := PromptDate('Issue date (dd.mm.yyyy)',
                                  Defaults.IssueDate);
-  Result.Deadline := PromptDate('Deadline (dd.mm.yyyy)',
-                                Defaults.Deadline);
+  Result.Deadline := PromptDateNotBefore('Deadline (dd.mm.yyyy)',
+                                Defaults.Deadline, Result.IssueDate);
 end;
 
 { Item 1. Read data from file }
@@ -354,6 +356,7 @@ begin
   FillChar(Blank_E, SizeOf(Blank_E), 0);
   FillChar(Blank_W, SizeOf(Blank_W), 0);
   Blank_E.WorkHours := 8;
+  Blank_E.BossCode := -1;
   Blank_W.IssueDate := Now;
   Blank_W.Deadline := Now + 30;
 

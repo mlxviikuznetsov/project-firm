@@ -19,8 +19,14 @@ procedure PrintMainMenu;
 function  PromptStr(const Prompt: string): string;
 // Read an integer with a prompt and default value
 function  PromptInt(const Prompt: string; Default: Integer): Integer;
+// Read an integer with a prompt, default value, and inclusive valid range
+function  PromptIntRange(const Prompt: string;
+                         Default, MinVal, MaxVal: Integer): Integer;
 // Read a date with a prompt and default value
 function  PromptDate(const Prompt: string; Default: TDateTime): TDateTime;
+// Read a date with a prompt, default value, and a minimum allowed date
+function  PromptDateNotBefore(const Prompt: string;
+                              Default, MinDate: TDateTime): TDateTime;
 // Truncate an arbitrary text field for fixed-width column display
 function TruncateStr(const S: string; MaxLen: Integer): string;
 // Print employee table
@@ -120,21 +126,97 @@ begin
   if S = '' then Result := Default
   else Result := StrToIntDef(S, Default);
 end;
-function PromptDate(const Prompt: string; Default: TDateTime): TDateTime;
-var S: string;
+function PromptIntRange(const Prompt: string;
+                        Default, MinVal, MaxVal: Integer): Integer;
+var
+  S: string;
+  Val: Integer;
+  Valid: Boolean;
 begin
-  SetColor(CLR_ACCENT);
-  Write('  ' + Prompt + ' [' + DateToStr(Default) + ']: ');
-  ResetColor;
-  ReadLn(S);
-  S := Trim(S);
-  if S = '' then Result := Default
-  else
-  begin
-    try Result := StrToDate(S);
-    except Result := Default;
+  repeat
+    SetColor(CLR_ACCENT);
+    Write('  ' + Prompt + ' [' + IntToStr(Default) + ']: ');
+    ResetColor;
+    ReadLn(S);
+    S := Trim(S);
+    if S = '' then
+    begin
+      Val := Default;
+      Valid := True;
+    end
+    else
+      Valid := TryStrToInt(S, Val);
+    if Valid and ((Val < MinVal) or (Val > MaxVal)) then
+      Valid := False;
+    if not Valid then
+    begin
+      SetColor(CLR_ERROR);
+      WriteLn('  Please enter a whole number between ',
+              MinVal, ' and ', MaxVal, '.');
+      ResetColor;
     end;
-  end;
+  until Valid;
+  Result := Val;
+end;
+function PromptDate(const Prompt: string; Default: TDateTime): TDateTime;
+var
+  S: string;
+  Val: TDateTime;
+  Valid: Boolean;
+begin
+  repeat
+    SetColor(CLR_ACCENT);
+    Write('  ' + Prompt + ' [' + DateToStr(Default) + ']: ');
+    ResetColor;
+    ReadLn(S);
+    S := Trim(S);
+    if S = '' then
+    begin
+      Val := Default;
+      Valid := True;
+    end
+    else
+      Valid := TryStrToDate(S, Val);
+    if not Valid then
+    begin
+      SetColor(CLR_ERROR);
+      WriteLn('  Please enter a valid date (dd.mm.yyyy).');
+      ResetColor;
+    end;
+  until Valid;
+  Result := Val;
+end;
+function PromptDateNotBefore(const Prompt: string;
+                             Default, MinDate: TDateTime): TDateTime;
+var
+  S: string;
+  Val: TDateTime;
+  Valid: Boolean;
+begin
+  repeat
+    SetColor(CLR_ACCENT);
+    Write('  ' + Prompt + ' [' + DateToStr(Default) + ']: ');
+    ResetColor;
+    ReadLn(S);
+    S := Trim(S);
+    if S = '' then
+    begin
+      Val := Default;
+      Valid := True;
+    end
+    else
+      Valid := TryStrToDate(S, Val);
+    if Valid and (Val < MinDate) then
+      Valid := False;
+    if not Valid then
+    begin
+      SetColor(CLR_ERROR);
+      WriteLn('  Please enter a valid date on or after ',
+              DateToStr(MinDate), '.');
+      ResetColor;
+    end;
+  until Valid;
+  Result := Val;
 end;
 function TruncateStr(const S: string; MaxLen: Integer): string;
 begin
@@ -212,4 +294,3 @@ begin
   Result := (Trim(AnsiLowerCase(S)) = 'y');
 end;
 end.
-
