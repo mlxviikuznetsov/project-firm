@@ -148,7 +148,7 @@ const EMP_FMT = ' %-4s | %-30s | %-20s | %-7s | %-6s';
 procedure PrintEmployeeHeader;
 begin
   SetColor(CLR_HEADER);
-  WriteLn(Format(EMP_FMT, ['#', 'Full Name', 'Position', 'Hrs/day', 'Boss']));
+  WriteLn(Format(EMP_FMT, ['Code', 'Full Name', 'Position', 'Hrs/day', 'Boss']));
   DrawLine(80);
   ResetColor;
 end;
@@ -156,7 +156,7 @@ procedure PrintEmployeeRow(Idx: Integer; const E: TEmployee);
 begin
   if Odd(Idx) then SetColor(CLR_ROWALT) else ResetColor;
   WriteLn(Format(EMP_FMT, [
-    IntToStr(Idx),
+    IntToStr(E.Code),
     TruncateStr(string(E.FullName), 30),
     TruncateStr(string(E.Position), 20),
     IntToStr(E.WorkHours),
