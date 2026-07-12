@@ -139,7 +139,6 @@ begin
   Result.Task := ShortString(PromptStr('Task'));
   if Result.Task = '' then Result.Task := Defaults.Task;
   Result.ExecutorCode := PromptInt('Executor code', Defaults.ExecutorCode);
-  Result.BossCode := PromptInt('Boss code', Defaults.BossCode);
   Result.IssueDate := PromptDate('Issue date (dd.mm.yyyy)',
                                  Defaults.IssueDate);
   Result.Deadline := PromptDate('Deadline (dd.mm.yyyy)',
@@ -558,7 +557,6 @@ begin
   WriteLn(F, '  ', Idx, '. Project   : ', W.ProjectName);
   WriteLn(F, '     Task      : ', W.Task);
   WriteLn(F, '     Exec. (#) : ', W.ExecutorCode);
-  WriteLn(F, '     Boss (#)  : ', W.BossCode);
   WriteLn(F, '     Issued    : ', DateToStr(W.IssueDate));
   WriteLn(F, '     Deadline  : ', DateToStr(W.Deadline));
   WriteLn(F, '  ' + StringOfChar('-', 60));

@@ -14,7 +14,6 @@ type
     ProjectName  : string[100];
     Task         : string[200];
     ExecutorCode : Integer;
-    BossCode     : Integer;
     IssueDate    : TDateTime;
     Deadline     : TDateTime;
   end;
