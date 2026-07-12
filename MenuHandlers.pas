@@ -170,7 +170,7 @@ var Choice: string;
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 4. VIEW LISTS ]');
+  WriteLn('  [ 2. VIEW LISTS ]');
   ResetColor;
   WriteLn;
   WriteLn('  1 -- View employee list');
@@ -191,7 +191,7 @@ begin
   begin
     PrintHeader;
     SetColor(CLR_ACCENT);
-    WriteLn('  [ 3. TASK LIST ]');
+    WriteLn('  [ 2. TASK LIST ]');
     ResetColor;
     WriteLn;
     ShowWorks(WorkHead);
@@ -205,7 +205,7 @@ var Choice: string;
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 4. SORT ]');
+  WriteLn('  [ 3. SORT ]');
   ResetColor;
   WriteLn;
   WriteLn('  1 -- Employees by full name (A->Z)');
@@ -247,7 +247,7 @@ var
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 5. SEARCH ]');
+  WriteLn('  [ 4. SEARCH ]');
   ResetColor;
   WriteLn;
   WriteLn('  1 -- Search employee by full name');
@@ -360,7 +360,7 @@ begin
 
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 6. ADD ]');
+  WriteLn('  [ 5. ADD ]');
   ResetColor;
   WriteLn;
   WriteLn('  1 -- Add employee');
@@ -420,7 +420,7 @@ var
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 7. DELETE ]');
+  WriteLn('  [ 6. DELETE ]');
   ResetColor;
   WriteLn;
   WriteLn('  1 -- Delete employee (by code)');
@@ -491,7 +491,7 @@ var
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 8. EDIT ]');
+  WriteLn('  [ 7. EDIT ]');
   ResetColor;
   WriteLn;
   WriteLn('  1 -- Edit employee (by code)');
@@ -575,7 +575,7 @@ var
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 9. PROJECT REPORTS ]');
+  WriteLn('  [ 8. PROJECT REPORTS ]');
   ResetColor;
   WriteLn;
   WriteLn('  1 -- SF1: Tasks for a specific project');
