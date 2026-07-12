@@ -16,11 +16,11 @@ uses
 var
   Choice: string;
 begin
-  { Главный цикл программы }
+  { Main program loop }
   repeat
     PrintHeader;
     PrintMainMenu;
-    Choice := PromptStr('Введите номер пункта');
+    Choice := PromptStr('Enter menu item number');
     WriteLn;
     if Choice = '1' then DoReadFromFile
     else if Choice = '2' then DoView
@@ -35,9 +35,9 @@ begin
     else
     begin
       SetColor(CLR_ERROR);
-      WriteLn('  Неверный выбор. Введите число от 1 до 10.');
+      WriteLn('  Invalid choice. Enter a number from 1 to 10.');
       ResetColor;
       PressEnter;
     end;
-  until False; // Выход через Halt в DoExitNoSave/DoExitSave
+  until False; // Exit via Halt in DoExitNoSave/DoExitSave
 end.

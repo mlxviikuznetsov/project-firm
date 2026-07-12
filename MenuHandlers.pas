@@ -1,7 +1,7 @@
 unit MenuHandlers;
 
-{ Обработчики всех пунктов меню.
-  Каждая процедура соответствует одному пункту и полностью самодостаточна. }
+{ Handlers for all menu items.
+  Each procedure corresponds to one menu item and is fully self-contained. }
 
 interface
 
@@ -21,7 +21,7 @@ procedure DoExitSave;      // 10
 
 implementation
 
-{ Внутренние вспомогательные процедуры }
+{ Internal helper procedures }
 
 procedure ShowEmployees(Head: PEmployeeNode);
 var
@@ -31,7 +31,7 @@ begin
   if Head = nil then
   begin
     SetColor(CLR_ERROR);
-    WriteLn('  Список сотрудников пуст.');
+    WriteLn('  Employee list is empty.');
     ResetColor;
     Exit;
   end;
@@ -44,9 +44,9 @@ begin
     Inc(i);
     Cur := Cur^.Next;
   end;
-  DrawLine(72);
+  DrawLine(80);
   SetColor(CLR_OK);
-  WriteLn('  Итого сотрудников: ', i - 1);
+  WriteLn('  Total employees: ', i - 1);
   ResetColor;
 end;
 
@@ -58,7 +58,7 @@ begin
   if Head = nil then
   begin
     SetColor(CLR_ERROR);
-    WriteLn('  Список заданий пуст.');
+    WriteLn('  Task list is empty.');
     ResetColor;
     Exit;
   end;
@@ -71,80 +71,80 @@ begin
     Inc(i);
     Cur := Cur^.Next;
   end;
-  DrawLine(78);
+  DrawLine(86);
   SetColor(CLR_OK);
-  WriteLn('  Итого заданий: ', i - 1);
+  WriteLn('  Total tasks: ', i - 1);
   ResetColor;
-  WriteLn('  (!) Красный = просрочено, Жёлтый = срок <= 7 дней');
+  WriteLn('  (!) Red = overdue, Yellow = due <= 7 days');
 end;
 
-// Ввод данных сотрудника
+// Input employee data
 function InputEmployee(const Defaults: TEmployee; IsNew: Boolean): TEmployee;
 begin
   Result := Defaults;
   if IsNew then
-    Result.Code := PromptInt('Код сотрудника', Defaults.Code);
-  Result.FullName := ShortString(PromptStr('ФИО'));
+    Result.Code := PromptInt('Employee code', Defaults.Code);
+  Result.FullName := ShortString(PromptStr('Full name'));
   if Result.FullName = '' then Result.FullName := Defaults.FullName;
-  Result.Position := ShortString(PromptStr('Должность'));
+  Result.Position := ShortString(PromptStr('Position'));
   if Result.Position = '' then Result.Position := Defaults.Position;
-  Result.WorkHours := PromptInt('Рабочих часов в сутки', Defaults.WorkHours);
-  Result.BossCode := PromptInt('Код руководителя', Defaults.BossCode);
+  Result.WorkHours := PromptInt('Working hours per day', Defaults.WorkHours);
+  Result.BossCode := PromptInt('Boss code', Defaults.BossCode);
 end;
 
-// Ввод данных задания
+// Input task data
 function InputWork(const Defaults: TWork; IsNew: Boolean): TWork;
 begin
   Result := Defaults;
-  Result.ProjectName := ShortString(PromptStr('Название проекта'));
+  Result.ProjectName := ShortString(PromptStr('Project name'));
   if Result.ProjectName = '' then Result.ProjectName := Defaults.ProjectName;
-  Result.Task := ShortString(PromptStr('Задание'));
+  Result.Task := ShortString(PromptStr('Task'));
   if Result.Task = '' then Result.Task := Defaults.Task;
-  Result.ExecutorCode := PromptInt('Код исполнителя', Defaults.ExecutorCode);
-  Result.BossCode := PromptInt('Код руководителя', Defaults.BossCode);
-  Result.IssueDate := PromptDate('Дата выдачи (дд.мм.гггг)',
+  Result.ExecutorCode := PromptInt('Executor code', Defaults.ExecutorCode);
+  Result.BossCode := PromptInt('Boss code', Defaults.BossCode);
+  Result.IssueDate := PromptDate('Issue date (dd.mm.yyyy)',
                                  Defaults.IssueDate);
-  Result.Deadline := PromptDate('Срок выполнения (дд.мм.гггг)',
+  Result.Deadline := PromptDate('Deadline (dd.mm.yyyy)',
                                 Defaults.Deadline);
 end;
 
-{ Пункт 1. Чтение данных из файла }
+{ Item 1. Read data from file }
 procedure DoReadFromFile;
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 1. ЧТЕНИЕ ДАННЫХ ИЗ ФАЙЛА ]');
+  WriteLn('  [ 1. READ DATA FROM FILE ]');
   ResetColor;
   WriteLn;
-  WriteLn('  Загрузка из employees.dat и works.dat...');
+  WriteLn('  Loading from employees.dat and works.dat...');
   LoadFromFiles;
   WriteLn;
   SetColor(CLR_OK);
-  WriteLn('  Загружено сотрудников : ', EmpCount);
-  WriteLn('  Загружено заданий     : ', WorkCount);
+  WriteLn('  Employees loaded : ', EmpCount);
+  WriteLn('  Tasks loaded     : ', WorkCount);
   ResetColor;
   PressEnter;
 end;
 
-{ Пункт 2. Просмотр списков }
+{ Item 2. View lists }
 procedure DoView;
 var Choice: string;
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 4. ПРОСМОТР СПИСКОВ ]');
+  WriteLn('  [ 4. VIEW LISTS ]');
   ResetColor;
   WriteLn;
-  WriteLn('  1 -- Просмотр списка сотрудников');
-  WriteLn('  2 -- Просмотр списка заданий');
-  WriteLn('  0 -- Назад');
+  WriteLn('  1 -- View employee list');
+  WriteLn('  2 -- View task list');
+  WriteLn('  0 -- Back');
   WriteLn;
-  Choice := PromptStr('Выбор');
+  Choice := PromptStr('Choice');
   if Choice = '1' then
   begin
     PrintHeader;
     SetColor(CLR_ACCENT);
-    WriteLn('  [ 2. СПИСОК СОТРУДНИКОВ ]');
+    WriteLn('  [ 2. EMPLOYEE LIST ]');
     ResetColor;
     WriteLn;
     ShowEmployees(EmpHead);
@@ -153,7 +153,7 @@ begin
   begin
     PrintHeader;
     SetColor(CLR_ACCENT);
-    WriteLn('  [ 3. СПИСОК ЗАДАНИЙ ]');
+    WriteLn('  [ 3. TASK LIST ]');
     ResetColor;
     WriteLn;
     ShowWorks(WorkHead);
@@ -161,26 +161,26 @@ begin
   if Choice <> '0' then PressEnter;
 end;
 
-{ Пункт 3. Сортировка }
+{ Item 3. Sort }
 procedure DoSort;
 var Choice: string;
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 4. СОРТИРОВКА ]');
+  WriteLn('  [ 4. SORT ]');
   ResetColor;
   WriteLn;
-  WriteLn('  1 -- Сотрудников по ФИО (А->Я)');
-  WriteLn('  2 -- Заданий по сроку выполнения (возрастание)');
-  WriteLn('  0 -- Назад');
+  WriteLn('  1 -- Employees by full name (A->Z)');
+  WriteLn('  2 -- Tasks by deadline (ascending)');
+  WriteLn('  0 -- Back');
   WriteLn;
-  Choice := PromptStr('Выбор');
+  Choice := PromptStr('Choice');
   if Choice = '1' then
   begin
     EmpSortByName;
     PrintHeader;
     SetColor(CLR_OK);
-    WriteLn('  Сотрудники отсортированы по ФИО:');
+    WriteLn('  Employees sorted by full name:');
     ResetColor;
     WriteLn;
     ShowEmployees(EmpHead);
@@ -190,7 +190,7 @@ begin
     WorkSortByDeadline;
     PrintHeader;
     SetColor(CLR_OK);
-    WriteLn('  Задания отсортированы по сроку выполнения:');
+    WriteLn('  Tasks sorted by deadline:');
     ResetColor;
     WriteLn;
     ShowWorks(WorkHead);
@@ -198,7 +198,7 @@ begin
   if Choice <> '0' then PressEnter;
 end;
 
-{ Пункт 4. Поиск }
+{ Item 4. Search }
 procedure DoSearch;
 var
   Choice, Query: string;
@@ -209,23 +209,23 @@ var
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 5. ПОИСК ]');
+  WriteLn('  [ 5. SEARCH ]');
   ResetColor;
   WriteLn;
-  WriteLn('  1 -- Поиск сотрудника по ФИО');
-  WriteLn('  2 -- Поиск задания по названию проекта');
-  WriteLn('  3 -- Поиск задания по коду исполнителя');
-  WriteLn('  0 -- Назад');
+  WriteLn('  1 -- Search employee by full name');
+  WriteLn('  2 -- Search task by project name');
+  WriteLn('  3 -- Search task by executor code');
+  WriteLn('  0 -- Back');
   WriteLn;
-  Choice := PromptStr('Выбор');
+  Choice := PromptStr('Choice');
 
   if Choice = '1' then
   begin
-    Query := PromptStr('Введите ФИО (или часть)');
+    Query := PromptStr('Enter full name (or part)');
     if Query = '' then Exit;
     PrintHeader;
     SetColor(CLR_OK);
-    WriteLn('  Результаты поиска сотрудников по: "' + Query + '"');
+    WriteLn('  Employee search results for: "' + Query + '"');
     ResetColor;
     WriteLn;
     PrintEmployeeHeader;
@@ -243,19 +243,19 @@ begin
       Inc(i);
       Cur1 := Cur1^.Next;
     end;
-    DrawLine(72);
+    DrawLine(80);
     SetColor(CLR_OK);
-    WriteLn('  Найдено: ', Found);
+    WriteLn('  Found: ', Found);
     ResetColor;
     PressEnter;
   end
   else if Choice = '2' then
   begin
-    Query := PromptStr('Введите название проекта (или часть)');
+    Query := PromptStr('Enter project name (or part)');
     if Query = '' then Exit;
     PrintHeader;
     SetColor(CLR_OK);
-    WriteLn('  Результаты поиска заданий по проекту: "' + Query + '"');
+    WriteLn('  Task search results by project: "' + Query + '"');
     ResetColor;
     WriteLn;
     PrintWorkHeader;
@@ -271,18 +271,18 @@ begin
       Inc(i);
       Cur2 := Cur2^.Next;
     end;
-    DrawLine(78);
+    DrawLine(86);
     SetColor(CLR_OK);
-    WriteLn('  Найдено: ', Found);
+    WriteLn('  Found: ', Found);
     ResetColor;
     PressEnter;
   end
   else if Choice = '3' then
   begin
-    i := PromptInt('Код исполнителя', 0);
+    i := PromptInt('Executor code', 0);
     PrintHeader;
     SetColor(CLR_OK);
-    WriteLn('  Задания исполнителя #', i, ':');
+    WriteLn('  Tasks of executor #', i, ':');
     ResetColor;
     WriteLn;
     PrintWorkHeader;
@@ -297,15 +297,15 @@ begin
       end;
       Cur2 := Cur2^.Next;
     end;
-    DrawLine(78);
+    DrawLine(86);
     SetColor(CLR_OK);
-    WriteLn('  Найдено: ', Found);
+    WriteLn('  Found: ', Found);
     ResetColor;
     PressEnter;
   end;
 end;
 
-{ Пункт 5. Добавление }
+{ Item 5. Add }
 procedure DoAdd;
 var
   Choice: string;
@@ -322,14 +322,14 @@ begin
 
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 6. ДОБАВЛЕНИЕ ]');
+  WriteLn('  [ 6. ADD ]');
   ResetColor;
   WriteLn;
-  WriteLn('  1 -- Добавить сотрудника');
-  WriteLn('  2 -- Добавить задание');
-  WriteLn('  0 -- Назад');
+  WriteLn('  1 -- Add employee');
+  WriteLn('  2 -- Add task');
+  WriteLn('  0 -- Back');
   WriteLn;
-  Choice := PromptStr('Выбор');
+  Choice := PromptStr('Choice');
 
   if Choice = '1' then
   begin
@@ -339,13 +339,13 @@ begin
     begin
       EmpAddToEnd(E);
       SetColor(CLR_OK);
-      WriteLn('  [OK] Сотрудник добавлен. Всего: ', EmpCount);
+      WriteLn('  [OK] Employee added. Total: ', EmpCount);
       ResetColor;
     end
     else
     begin
       SetColor(CLR_ERROR);
-      WriteLn('  Добавление отменено.');
+      WriteLn('  Add cancelled.');
       ResetColor;
     end;
     PressEnter;
@@ -358,20 +358,20 @@ begin
     begin
       WorkAddToEnd(W);
       SetColor(CLR_OK);
-      WriteLn('  [OK] Задание добавлено. Всего: ', WorkCount);
+      WriteLn('  [OK] Task added. Total: ', WorkCount);
       ResetColor;
     end
     else
     begin
       SetColor(CLR_ERROR);
-      WriteLn('  Добавление отменено.');
+      WriteLn('  Add cancelled.');
       ResetColor;
     end;
     PressEnter;
   end;
 end;
 
-{ Пункт 6. Удаление }
+{ Item 6. Delete }
 procedure DoDelete;
 var
   Choice: string;
@@ -379,34 +379,34 @@ var
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 7. УДАЛЕНИЕ ]');
+  WriteLn('  [ 7. DELETE ]');
   ResetColor;
   WriteLn;
-  WriteLn('  1 -- Удалить сотрудника (по коду)');
-  WriteLn('  2 -- Удалить задание (по номеру строки)');
-  WriteLn('  0 -- Назад');
+  WriteLn('  1 -- Delete employee (by code)');
+  WriteLn('  2 -- Delete task (by row number)');
+  WriteLn('  0 -- Back');
   WriteLn;
-  Choice := PromptStr('Выбор');
+  Choice := PromptStr('Choice');
 
   if Choice = '1' then
   begin
     WriteLn;
     ShowEmployees(EmpHead);
     WriteLn;
-    Code := PromptInt('Код сотрудника для удаления', -1);
+    Code := PromptInt('Employee code to delete', -1);
     if (Code <> -1)
-    and Confirm('Удалить сотрудника #' + IntToStr(Code) + '?') then
+    and Confirm('Delete employee #' + IntToStr(Code) + '?') then
     begin
       if EmpDeleteByCode(Code) then
       begin
         SetColor(CLR_OK);
-        WriteLn('  [OK] Сотрудник удалён.');
+        WriteLn('  [OK] Employee deleted.');
         ResetColor;
       end
       else
       begin
         SetColor(CLR_ERROR);
-        WriteLn('  Сотрудник с кодом ', Code, ' не найден.');
+        WriteLn('  Employee with code ', Code, ' not found.');
         ResetColor;
       end;
     end;
@@ -417,20 +417,20 @@ begin
     WriteLn;
     ShowWorks(WorkHead);
     WriteLn;
-    Idx := PromptInt('Номер строки для удаления (с 1)', -1) - 1;
+    Idx := PromptInt('Row number to delete (starting from 1)', -1) - 1;
     if (Idx >= 0)
-    and Confirm('Удалить задание #' + IntToStr(Idx + 1) + '?') then
+    and Confirm('Delete task #' + IntToStr(Idx + 1) + '?') then
     begin
       if WorkDeleteByIndex(Idx) then
       begin
         SetColor(CLR_OK);
-        WriteLn('  [OK] Задание удалено.');
+        WriteLn('  [OK] Task deleted.');
         ResetColor;
       end
       else
       begin
         SetColor(CLR_ERROR);
-        WriteLn('  Задание #', Idx + 1, ' не найдено.');
+        WriteLn('  Task #', Idx + 1, ' not found.');
         ResetColor;
       end;
     end;
@@ -438,7 +438,7 @@ begin
   end;
 end;
 
-{ Пункт 7. Редактирование }
+{ Item 7. Edit }
 procedure DoEdit;
 var
   Choice: string;
@@ -450,37 +450,37 @@ var
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 8. РЕДАКТИРОВАНИЕ ]');
+  WriteLn('  [ 8. EDIT ]');
   ResetColor;
   WriteLn;
-  WriteLn('  1 -- Редактировать сотрудника (по коду)');
-  WriteLn('  2 -- Редактировать задание (по номеру строки)');
-  WriteLn('  0 -- Назад');
+  WriteLn('  1 -- Edit employee (by code)');
+  WriteLn('  2 -- Edit task (by row number)');
+  WriteLn('  0 -- Back');
   WriteLn;
-  Choice := PromptStr('Выбор');
+  Choice := PromptStr('Choice');
 
   if Choice = '1' then
   begin
     WriteLn;
     ShowEmployees(EmpHead);
     WriteLn;
-    Code := PromptInt('Код сотрудника для редактирования', -1);
+    Code := PromptInt('Employee code to edit', -1);
     Node1 := EmpFindByCode(Code);
     if Node1 = nil then
     begin
       SetColor(CLR_ERROR);
-      WriteLn('  Не найдено.');
+      WriteLn('  Not found.');
       ResetColor;
       PressEnter;
       Exit;
     end;
-    WriteLn('  (Enter -- оставить текущее значение)');
+    WriteLn('  (Enter -- keep current value)');
     WriteLn;
     NewE := InputEmployee(Node1^.Data, False);
     NewE.Code := Code;
     EmpUpdateByCode(Code, NewE);
     SetColor(CLR_OK);
-    WriteLn('  [OK] Запись обновлена.');
+    WriteLn('  [OK] Record updated.');
     ResetColor;
     PressEnter;
   end
@@ -489,37 +489,37 @@ begin
     WriteLn;
     ShowWorks(WorkHead);
     WriteLn;
-    Idx := PromptInt('Номер строки для редактирования (с 1)', -1) - 1;
+    Idx := PromptInt('Row number to edit (starting from 1)', -1) - 1;
     Node2 := WorkGetByIndex(Idx);
     if Node2 = nil then
     begin
       SetColor(CLR_ERROR);
-      WriteLn('  Не найдено.');
+      WriteLn('  Not found.');
       ResetColor;
       PressEnter;
       Exit;
     end;
-    WriteLn('  (Enter -- оставить текущее значение)');
+    WriteLn('  (Enter -- keep current value)');
     WriteLn;
     NewW := InputWork(Node2^.Data, False);
     WorkUpdateByIndex(Idx, NewW);
     SetColor(CLR_OK);
-    WriteLn('  [OK] Запись обновлена.');
+    WriteLn('  [OK] Record updated.');
     ResetColor;
     PressEnter;
   end;
 end;
 
-{ Пункт 8. Отчёты по проектам (СФ1 + СФ2) }
+{ Item 8. Project reports (SF1 + SF2) }
 
 procedure WriteWorkToFile(var F: TextFile; Idx: Integer; const W: TWork);
 begin
-  WriteLn(F, '  ', Idx, '. Проект    : ', W.ProjectName);
-  WriteLn(F, '     Задание   : ', W.Task);
-  WriteLn(F, '     Исп. (#)  : ', W.ExecutorCode);
-  WriteLn(F, '     Рук. (#)  : ', W.BossCode);
-  WriteLn(F, '     Выдано    : ', DateToStr(W.IssueDate));
-  WriteLn(F, '     Срок      : ', DateToStr(W.Deadline));
+  WriteLn(F, '  ', Idx, '. Project   : ', W.ProjectName);
+  WriteLn(F, '     Task      : ', W.Task);
+  WriteLn(F, '     Exec. (#) : ', W.ExecutorCode);
+  WriteLn(F, '     Boss (#)  : ', W.BossCode);
+  WriteLn(F, '     Issued    : ', DateToStr(W.IssueDate));
+  WriteLn(F, '     Deadline  : ', DateToStr(W.Deadline));
   WriteLn(F, '  ' + StringOfChar('-', 60));
 end;
 
@@ -534,33 +534,33 @@ var
 begin
   PrintHeader;
   SetColor(CLR_ACCENT);
-  WriteLn('  [ 9. ОТЧЁТЫ ПО ПРОЕКТАМ ]');
+  WriteLn('  [ 9. PROJECT REPORTS ]');
   ResetColor;
   WriteLn;
-  WriteLn('  1 -- СФ1: Задачи по конкретному проекту');
-  WriteLn('  2 -- СФ2: Задачи на ближайший месяц (30 дней)');
-  WriteLn('  0 -- Назад');
+  WriteLn('  1 -- SF1: Tasks for a specific project');
+  WriteLn('  2 -- SF2: Tasks for the upcoming month (30 days)');
+  WriteLn('  0 -- Back');
   WriteLn;
-  Choice := PromptStr('Выбор');
+  Choice := PromptStr('Choice');
 
-  // СФ1
+  // SF1
   if Choice = '1' then
   begin
-    ProjName := PromptStr('Название проекта');
+    ProjName := PromptStr('Project name');
     if ProjName = '' then Exit;
 
     WorkGetByProject(ProjName, Nodes, Count);
 
     PrintHeader;
     SetColor(CLR_ACCENT);
-    WriteLn('  СФ1 -- Задачи по проекту: "' + ProjName + '"');
+    WriteLn('  SF1 -- Tasks for project: "' + ProjName + '"');
     ResetColor;
     WriteLn;
 
     if Count = 0 then
     begin
       SetColor(CLR_ERROR);
-      WriteLn('  Заданий по данному проекту не найдено.');
+      WriteLn('  No tasks found for this project.');
       ResetColor;
     end
     else
@@ -568,48 +568,48 @@ begin
       PrintWorkHeader;
       for i := 0 to Count - 1 do
         PrintWorkRow(i + 1, Nodes[i]^.Data);
-      DrawLine(78);
+      DrawLine(86);
       SetColor(CLR_OK);
-      WriteLn('  Найдено заданий: ', Count);
+      WriteLn('  Tasks found: ', Count);
       ResetColor;
 
-      // Запись в файл
+      // Write to file
       FileName := 'sf1_tasks_by_project.txt';
       AssignFile(F, FileName);
       Rewrite(F);
       try
-        WriteLn(F, 'ЗАДАЧИ ПО ПРОЕКТУ: ' + ProjName);
-        WriteLn(F, 'Дата формирования: ' + DateTimeToStr(Now));
+        WriteLn(F, 'TASKS FOR PROJECT: ' + ProjName);
+        WriteLn(F, 'Generated on: ' + DateTimeToStr(Now));
         WriteLn(F, StringOfChar('=', 62));
         for i := 0 to Count - 1 do
           WriteWorkToFile(F, i + 1, Nodes[i]^.Data);
-        WriteLn(F, 'Итого: ', Count, ' задан(ий)');
+        WriteLn(F, 'Total: ', Count, ' task(s)');
       finally CloseFile(F);
       end;
 
       SetColor(CLR_OK);
-      WriteLn('  Результат сохранён в: ', FileName);
+      WriteLn('  Result saved to: ', FileName);
       ResetColor;
     end;
     PressEnter;
   end
 
-  // СФ2
+  // SF2
   else if Choice = '2' then
   begin
     WorkGetDeadlineThisMonth(Nodes, Count);
 
     PrintHeader;
     SetColor(CLR_ACCENT);
-    WriteLn('  СФ2 -- Задачи со сроком выполнения в ближайшие 30 дней');
-    WriteLn('  (от ', DateToStr(Now), ' до ', DateToStr(Now + 30), ')');
+    WriteLn('  SF2 -- Tasks due within the next 30 days');
+    WriteLn('  (from ', DateToStr(Now), ' to ', DateToStr(Now + 30), ')');
     ResetColor;
     WriteLn;
 
     if Count = 0 then
     begin
       SetColor(CLR_ERROR);
-      WriteLn('  Заданий с дедлайном в ближайшие 30 дней не найдено.');
+      WriteLn('  No tasks found with a deadline in the next 30 days.');
       ResetColor;
     end
     else
@@ -617,63 +617,63 @@ begin
       PrintWorkHeader;
       for i := 0 to Count - 1 do
         PrintWorkRow(i + 1, Nodes[i]^.Data);
-      DrawLine(78);
+      DrawLine(86);
       SetColor(CLR_OK);
-      WriteLn('  Найдено заданий: ', Count);
+      WriteLn('  Tasks found: ', Count);
       ResetColor;
 
-      // Запись в файл
+      // Write to file
       FileName := 'sf2_deadline_this_month.txt';
       AssignFile(F, FileName);
       Rewrite(F);
       try
-        WriteLn(F, 'ЗАДАЧИ СО СРОКОМ В БЛИЖАЙШИЕ 30 ДНЕЙ');
-        WriteLn(F, 'Период: ' + DateToStr(Now) + ' — ' + DateToStr(Now + 30));
-        WriteLn(F, 'Дата формирования: ' + DateTimeToStr(Now));
+        WriteLn(F, 'TASKS DUE WITHIN THE NEXT 30 DAYS');
+        WriteLn(F, 'Period: ' + DateToStr(Now) + ' - ' + DateToStr(Now + 30));
+        WriteLn(F, 'Generated on: ' + DateTimeToStr(Now));
         WriteLn(F, StringOfChar('=', 62));
         for i := 0 to Count - 1 do
           WriteWorkToFile(F, i + 1, Nodes[i]^.Data);
-        WriteLn(F, 'Итого: ', Count, ' задан(ий)');
+        WriteLn(F, 'Total: ', Count, ' task(s)');
       finally CloseFile(F);
       end;
 
       SetColor(CLR_OK);
-      WriteLn('  Результат сохранён в: ', FileName);
+      WriteLn('  Result saved to: ', FileName);
       ResetColor;
     end;
     PressEnter;
   end;
 end;
 
-{ Пункт 9. Выход без сохранения }
+{ Item 9. Exit without saving }
 procedure DoExitNoSave;
 begin
   WriteLn;
-  if Confirm('Выйти без сохранения? Все изменения будут потеряны') then
+  if Confirm('Exit without saving? All changes will be lost') then
   begin
     EmpClearList;
     WorkClearList;
     SetColor(CLR_ACCENT);
-    WriteLn('  До свидания!');
+    WriteLn('  Goodbye!');
     ResetColor;
     Halt(0);
   end;
 end;
 
-{ Пункт 10. Выход с сохранением }
+{ Item 10. Exit with saving }
 procedure DoExitSave;
 begin
   WriteLn;
-  WriteLn('  Сохранение данных...');
+  WriteLn('  Saving data...');
   SaveToFiles;
   SetColor(CLR_OK);
-  WriteLn('  Сохранено: employees.dat (', EmpCount, ' записей)');
-  WriteLn('  Сохранено: works.dat     (', WorkCount, ' записей)');
+  WriteLn('  Saved: employees.dat (', EmpCount, ' records)');
+  WriteLn('  Saved: works.dat     (', WorkCount, ' records)');
   ResetColor;
   EmpClearList;
   WorkClearList;
   SetColor(CLR_ACCENT);
-  WriteLn('  До свидания!');
+  WriteLn('  Goodbye!');
   ResetColor;
   Halt(0);
 end;

@@ -15,7 +15,7 @@ procedure WorkClearList;
 procedure WorkSortByDeadline;
 function WorkCount: Integer;
 
-// СФ1 и СФ2 возвращают динамически выделенный массив
+// SF1 and SF2 return a dynamically allocated array
 procedure WorkGetByProject(const ProjName: string;
                            var Nodes: array of PWorkNode; var Count: Integer);
 procedure WorkGetDeadlineThisMonth(var Nodes: array of PWorkNode;
